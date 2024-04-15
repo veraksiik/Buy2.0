@@ -1,7 +1,7 @@
 #include <iostream>
 //#include <Windows.h>
 #include <cstdlib>
-#include <iomanip>
+//#include <iomanip>
 #include <string>
 #include <limits>
 
@@ -42,6 +42,13 @@ void Selling();
 void AddElementToReceipt(int& receiptSize, int id, int count);
 void PrintReceipt();
 void ChangePrice();
+void RemoveStorage();
+void AddToStorage();
+void ChangeStorage();
+void AddElement();
+void DeleteElement();
+
+
 
 
 int main() {
@@ -49,10 +56,8 @@ int main() {
 
 	setlocale(LC_ALL, "ru");
 	srand(time(NULL));
+
 	Start();
-	CreateStorage();
-	ShowStorage();
-	Selling();
 
 	delete[] test;
 	delete[] nameArr;
@@ -109,7 +114,7 @@ void Start()
 			if (chooseStorageType == 1)
 			{
 				CreateStorage();
-				//
+				Shop();
 			}
 			else if (chooseStorageType == 2)
 			{
@@ -181,22 +186,22 @@ void Shop()
 		}
 		else if (choose == 4) {
 
-
+			RemoveStorage();
 
 		}
 		else if (choose == 5) {
 
-
+			AddToStorage();
 
 		}
 		else if (choose == 6) {
 
-
+			ChangeStorage();
 
 		}
 		else if (choose == 0) {
 
-
+			break;
 
 		}
 		else {
@@ -311,21 +316,17 @@ void Selling()
 			}
 			std::cout << "Купить ещё один товар?\n1-Да\n2-Нет\n";
 			std::cin >> confirm;
-			if (confirm == 2)
+			if (confirm == 1)
 			{
-				break;
+				confirm;
 			}
-
+			break;
 
 		} while (true);
-
 		PrintReceipt();
 		//скидки и итог+скидки
-
-
-
+		break;
 	}
-
 }
 
 template<typename ArrType>
@@ -412,6 +413,188 @@ void ChangePrice()
 	std::cout << "Цена изменена";
 }
 
+void RemoveStorage()
+{
+
+	int id;
+	int goodCount;
+	do
+	{
+		std::cout << "Введите id товара: ";
+		std::cin >> id;
+
+	} while (id<1 || id>test[size - 1]);
+	std::cout << "\n\nТекущее количество товара: " << nameArr[id - 1] << " = " << countArr[id - 1];
+	do
+	{
+		std::cout << "\nЧисло списывания товара: ";
+		std::cin >> goodCount;
+
+	} while (goodCount>countArr[id-1]);
+	countArr[id - 1] -= goodCount;
+	std::cout << "\nCписание произошло успешно";
+
+
+
+
+
+}
+
+void AddToStorage()
+{
+
+	int id;
+	int goodCount;
+	do
+	{
+		std::cout << "Введите id товара: ";
+		std::cin >> id;
+
+	} while (id<1 || id>test[size - 1]);
+	std::cout << "\n\nТекущее количество товара: " << nameArr[id - 1] << " = " << countArr[id - 1];
+	do
+	{
+		std::cout << "\nЧисло добавления товара: ";
+		std::cin >> goodCount;
+
+	} while (goodCount<0);
+	countArr[id - 1] += goodCount;
+	std::cout << "\nПополнение произошло успешно";
+
+}
+
+void ChangeStorage()
+{
+	int choose;
+	do
+	{
+		std::cout << "Изменение склада. \nДобавить новый товар-1\nУдалить товар-2\nВыход-3\n";
+		std::cin >> choose;
+	} while (choose<1 || choose>3);
+	if (choose==1)
+	{
+		AddElement();
+	}
+	else if (choose == 2)
+	{
+		DeleteElement();
+	}
+	else if (choose == 3)
+	{
+		std::cout << "Выход";
+	}
+
+}
+
+void AddElement()
+{
+
+		int* idArrTemp = new int[size];
+		std::string* nameArrTemp = new std::string[size];
+		int* countArrTemp = new int[size];
+		float* priceArrTemp = new float[size];
+
+
+		for (int i = 0; i < size; i++)
+		{
+			idArrTemp[i] = test[i];
+			nameArrTemp[i] = nameArr[i];
+			countArrTemp[i] = countArr[i];
+			priceArrTemp[i] = priceArr[i];
+		}
+		delete[] test;
+		delete[] nameArr;
+		delete[] countArr;
+		delete[] priceArr;
+
+		size++;
+
+		test = new int[size];
+		nameArr = new std::string[size];
+		countArr = new int[size];
+		priceArr = new float[size];
+		
+
+		for (int i = 0; i < size - 1; i++)
+		{
+			test[i] = idArrTemp[i];
+			nameArr[i] = nameArrTemp[i];
+			countArr[i] = countArrTemp[i];
+			priceArr[i] = priceArrTemp[i];
+		}
+		
+		test[size - 1] = size - 1;
+		std::cout << "\nВведите имя нового товара: ";
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::getline(std::cin, nameArr[size - 1],'\n');
+		std::cout << "\nВведите кол-во нового товара: ";
+		std::cin >> countArr[size - 1];
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::cout << "\nВведите цену нового товара: ";
+		std::cin >> priceArr[size - 1];
+		std::cout << "\nТовар успешно добавлен\n\n";
+
+		delete[] idArrTemp;
+		delete[] nameArrTemp;
+		delete[] countArrTemp;
+		delete[] priceArrTemp;
+}
+void DeleteElement()
+{
+
+	int* idArrTemp = new int[size];
+	std::string* nameArrTemp = new std::string[size];
+	int* countArrTemp = new int[size];
+	float* priceArrTemp = new float[size];
+
+
+	for (int i = 0; i < size; i++)
+	{
+		idArrTemp[i] = test[i];
+		nameArrTemp[i] = nameArr[i];
+		countArrTemp[i] = countArr[i];
+		priceArrTemp[i] = priceArr[i];
+	}
+	delete[] test;
+	delete[] nameArr;
+	delete[] countArr;
+	delete[] priceArr;
+
+	size--;
+
+	test = new int[size];
+	nameArr = new std::string[size];
+	countArr = new int[size];
+	priceArr = new float[size];
+
+	int index = 0;
+	std::cout << "Какой товар удалить? \nВведите id товара: ";
+	std::cin >> index;
+	for (int i = 0, j=0; j < size, i < size; i++,j++)
+	{
+		if (i==index-1)
+		{
+			i++;
+			test[j] = idArrTemp[j];
+			nameArr[j] = nameArrTemp[i];
+			countArr[j] = countArrTemp[i];
+			priceArr[j] = priceArrTemp[i];
+		}
+		else {
+			
+			test[j] = idArrTemp[j];
+			nameArr[j] = nameArrTemp[i];
+			countArr[j] = countArrTemp[i];
+			priceArr[j] = priceArrTemp[i];
+		
+		}
+	}
+	delete[] idArrTemp;
+	delete[] nameArrTemp;
+	delete[] countArrTemp;
+	delete[] priceArrTemp;
+
+}
 template<typename ArrType>
 void FillArray(ArrType staticArray[], ArrType dinArray[], int size)
 {
