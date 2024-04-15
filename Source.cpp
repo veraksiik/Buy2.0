@@ -166,7 +166,7 @@ void Shop()
 		} while (choose < 0 || choose>6);
 		if (choose == 1) {
 
-
+			ShowStorage();
 
 		}
 		else if (choose == 2) {
@@ -176,7 +176,7 @@ void Shop()
 		}
 		else if (choose == 3) {
 
-
+			ChangePrice();
 
 		}
 		else if (choose == 4) {
