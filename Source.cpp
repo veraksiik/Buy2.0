@@ -12,6 +12,9 @@
 
 int size = 10;
 int receiptSize = 1;
+double totalSum = 0;
+int quantity = 0;
+double price;
 
 
 //массивы склада
@@ -47,6 +50,8 @@ void AddToStorage();
 void ChangeStorage();
 void AddElement();
 void DeleteElement();
+double calculateQuantityDiscount(int quantity, double price);
+double calculateTotalSumDiscount(double totalSum);
 
 
 
@@ -389,6 +394,18 @@ void PrintReceipt()
 	{
 		std::cout << "\t" << nameArr[i] << "\t\t\t" << countArr[i] << "\t\t" << priceArr[i] << "\n";
 	}
+	double quantityDiscount = calculateQuantityDiscount(quantity, totalSum);
+	double totalSumDiscount = calculateTotalSumDiscount(totalSum);
+
+	std::cout << "Общая сумма: " << totalSum << std::endl;
+	if (quantityDiscount > 0) {
+		std::cout << "Скидка за количество товаров: " << quantityDiscount << std::endl;
+	}
+	if (totalSumDiscount > 0) {
+		std::cout << "Скидка за общую сумму: " << totalSumDiscount << std::endl;
+	}
+	double finalPrice = totalSum - quantityDiscount - totalSumDiscount;
+	std::cout << "Итоговая цена: " << finalPrice << std::endl;
 }
 
 void ChangePrice()
@@ -602,4 +619,19 @@ void FillArray(ArrType staticArray[], ArrType dinArray[], int size)
 	{
 		dinArray[i] = staticArray[i];
 	}
+}
+
+double calculateQuantityDiscount(int quantity, double price) {
+	if (quantity >= 5) {
+		return price * 0.1; 
+	}
+	return 0;
+}
+
+
+double calculateTotalSumDiscount(double totalSum) {
+	if (totalSum >= 1000) {
+		return totalSum * 0.05; 
+	}
+	return 0;
 }
