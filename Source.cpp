@@ -15,6 +15,7 @@ int receiptSize = 1;
 double totalSum = 0;
 int quantity = 0;
 double price;
+const int MAX_ITEMS = 10;
 
 
 //массивы склада
@@ -28,7 +29,11 @@ std::string* nameReceipt = new std::string[receiptSize];
 int* countReceiptArr = new int[receiptSize];
 double* priceReceiptArr = new double[receiptSize];
 
-
+//массивы нового склада
+std::string names[MAX_ITEMS];
+int quantities[MAX_ITEMS];
+double prices[MAX_ITEMS];
+int numItems = 0;
 
 
 
@@ -52,6 +57,8 @@ void AddElement();
 void DeleteElement();
 double calculateQuantityDiscount(int quantity, double price);
 double calculateTotalSumDiscount(double totalSum);
+void pauseConsole();
+void CreateStorage2();
 
 
 
@@ -97,15 +104,19 @@ void Start()
 		std::cout << "\tПароль:   ";
 		std::getline(std::cin, password, '\n');
 
+		system("cls");
+
 		if (login != adminLogin || password != adminPassword) {
 			std::cerr << "\n\tНеверный логин и пароль\n\n";
 			std::cout << "\n\tПопробовать ещё раз? 1 - да, 2 - выход из прогаммы\n\n";
 			std::cin >> choose;
+			system("cls");
 			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 			if (choose == 2)
 			{
 				exit = true;
 			}
+			
 		}
 		else {
 			exit = true;
@@ -123,8 +134,8 @@ void Start()
 			}
 			else if (chooseStorageType == 2)
 			{
-				std::cout << "  ";
-
+				CreateStorage2();
+				Shop();
 			}
 			else
 			{
@@ -174,33 +185,41 @@ void Shop()
 			std::cout << "0) Закончить смену\n";
 			std::cin >> choose;
 		} while (choose < 0 || choose>6);
+		
 		if (choose == 1) {
 
+			system("cls");
 			ShowStorage();
+
 
 		}
 		else if (choose == 2) {
 
+			system("cls");
 			Selling();
 
 		}
 		else if (choose == 3) {
 
+			system("cls");
 			ChangePrice();
 
 		}
 		else if (choose == 4) {
 
+			system("cls");
 			RemoveStorage();
 
 		}
 		else if (choose == 5) {
 
+			system("cls");
 			AddToStorage();
 
 		}
 		else if (choose == 6) {
 
+			system("cls");
 			ChangeStorage();
 
 		}
@@ -214,41 +233,36 @@ void Shop()
 			std::cout << "Error";
 
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		
 	}
 }
 
 void ShowStorage()
 {
+	int choose;
+	std::cout << "Показать готовый склад или свой склад? \n1-Готовый склад\n2-Свой склад\n";
+	std::cin >> choose;
+	if (choose == 1) {
+		std::cout << "\tid товара\tНазвание\t\t\tЦена\t\tКол-во\n\n";
+		for (int i = 0; i < size; i++)
+		{
+			std::cout << "\t" << test[i] + 1 << "\t\t" << nameArr[i] << "\t\t\t" << priceArr[i] << "\t\t" << countArr[i] << "\n";
+		}
+	}
+	else if (choose == 2) {
 
-	std::cout << "\tid товара\tНазвание\t\t\tЦена\t\tКол-во\n\n";
-	for (int i = 0; i < size; i++)
+		std::cout << "\tНазвание\t\t\tЦена\t\tКол-во\n\n";
+		
+		for (int i = 0; i < numItems; i++) {
+			std::cout << "\t" << names[i] << "\t\t\t" << quantities[i] << "\t\t" << prices[i] << "\n";
+		}
+	
+	}
+	else 
 	{
-		std::cout << "\t" << test[i] + 1 << "\t\t" << nameArr[i] << "\t\t\t" << priceArr[i] << "\t\t" << countArr[i] << "\n";
+	
+		std::cout << "Error";
+
 	}
 
 }
@@ -323,13 +337,17 @@ void Selling()
 			std::cin >> confirm;
 			if (confirm == 1)
 			{
-				confirm;
+				system("cls");
+				continue;
 			}
-			break;
+			else
+			{
+				break;
+			}
 
 		} while (true);
+		system("cls");
 		PrintReceipt();
-		//скидки и итог+скидки
 		break;
 	}
 }
@@ -392,8 +410,10 @@ void PrintReceipt()
 	std::cout << "\tНазвание\t\t\tКол-во\t\tЦена\n\n";
 	for (int i = 0; i < receiptSize; i++)
 	{
-		std::cout << "\t" << nameArr[i] << "\t\t\t" << countArr[i] << "\t\t" << priceArr[i] << "\n";
+		std::cout << "\t" << nameReceipt[i] << "\t\t\t" << countReceiptArr[i] << "\t\t" << priceReceiptArr[i] << "\n";
+		totalSum += priceReceiptArr[i] * countReceiptArr[i];
 	}
+
 	double quantityDiscount = calculateQuantityDiscount(quantity, totalSum);
 	double totalSumDiscount = calculateTotalSumDiscount(totalSum);
 
@@ -634,4 +654,52 @@ double calculateTotalSumDiscount(double totalSum) {
 		return totalSum * 0.05; 
 	}
 	return 0;
+}
+
+void pauseConsole() {
+	std::cout << "Нажмите Enter для продолжения...";
+	std::cin.get();
+}
+
+
+	
+void CreateStorage2(){
+
+	while (true) {
+		system("cls");
+
+		if (numItems >= MAX_ITEMS) {
+			std::cout << "Склад полон! Невозможно добавить больше товаров.\n"; 
+			break;
+		}
+
+		std::cout << "Введите название товара (или 'стоп' для завершения): ";
+		std::cin >> names[numItems];
+		std::cin.ignore();
+
+		if (names[numItems] == "стоп") {
+			break;
+		}
+
+		std::cout << "Введите количество: ";
+		std::cin >> quantities[numItems];
+		std::cin.ignore(); 
+
+		std::cout << "Введите цену: ";
+		std::cin >> prices[numItems];
+		std::cin.ignore();
+
+		numItems++; 
+
+		pauseConsole();
+	}
+
+	system("cls"); 
+
+	std::cout << "Товары на складе:\n";
+	for (int i = 0; i < numItems; i++) {
+		std::cout << "\t" << names[i] << "\t\t\t" << quantities[i] << "\t\t" << prices[i] << "\n";
+	}
+
+	pauseConsole();
 }
